@@ -1,17 +1,13 @@
-﻿Build started 18/02/2016 16:58:56.
-     1>Project "c:\VS2012Projects\DungeonDinner\DungeonDinner\DungeonDinner.vcxproj" on node 2 (Build target(s)).
+﻿Build started 13/04/2016 17:27:19.
+     1>Project "C:\VS2012Projects\DungeonDinner\DungeonDinner\DungeonDinner.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\DungeonDinner.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt DungeonDinner.cpp
-         DungeonDinner.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Ic:\allegro\include /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"c:\VS2012Projects\DungeonDinner\Debug\DungeonDinner.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"c:\VS2012Projects\DungeonDinner\Debug\DungeonDinner.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"c:\VS2012Projects\DungeonDinner\Debug\DungeonDinner.lib" /MACHINE:X86 Debug\Dungeon.obj
-         Debug\DungeonDinner.obj
-         Debug\Monsters.obj
-         Debug\Player.obj
-         Debug\stdafx.obj
-         DungeonDinner.vcxproj -> c:\VS2012Projects\DungeonDinner\Debug\DungeonDinner.exe
-     1>Done Building Project "c:\VS2012Projects\DungeonDinner\DungeonDinner\DungeonDinner.vcxproj" (Build target(s)).
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.exe" /INCREMENTAL /NOLOGO /LIBPATH:c:\allegro\lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib "allegro-5.0.10-monolith-md-debug.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.lib" /MACHINE:X86 Debug\main.obj
+         DungeonDinner.vcxproj -> C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.exe
+     1>Done Building Project "C:\VS2012Projects\DungeonDinner\DungeonDinner\DungeonDinner.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.71
+Time Elapsed 00:00:02.71
