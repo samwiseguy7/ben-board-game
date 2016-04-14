@@ -4,6 +4,7 @@
 //standard
 #include <stdio.h>
 #include <string>
+#include <vector>
 
 //allegro
 #include <allegro5/allegro5.h>

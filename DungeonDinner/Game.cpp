@@ -1,8 +1,7 @@
 #include "Game.h"
 
 Game::Game(void)
-	:m_done(false),
-	m_mode(Screens::MENU)
+	:m_mode(Screen::MENU)
 {
 }
 
@@ -10,31 +9,27 @@ void Game::update() {}
 
 void Game::pressKey(ALLEGRO_EVENT& keyPressed)
 {
-	if(keyPressed.keyboard.keycode==ALLEGRO_KEY_ESCAPE) { m_done = true; }
-	else
+	Screen newMode = m_mode;
+	switch(m_mode)
 	{
-		Screens newMode = m_mode;
-		switch(m_mode)
-		{
-		case Screens::MENU:
-			newMode = m_menu.pressKey(keyPressed);
-			break;
-		case Screens::BOARD:
-			newMode = m_board.pressKey(keyPressed);
-			break;
-		}
-		m_mode = newMode;
+	case Screen::MENU:
+		newMode = m_menu.pressKey(keyPressed);
+		break;
+	case Screen::BOARD:
+		newMode = m_board.pressKey(keyPressed);
+		break;
 	}
+	m_mode = newMode;
 }
 
 void Game::releaseKey(ALLEGRO_EVENT& keyReleased)
 {
 	switch(m_mode)
 	{
-	case Screens::MENU:
+	case Screen::MENU:
 		m_menu.releaseKey(keyReleased);
 		break;
-	case Screens::BOARD:
+	case Screen::BOARD:
 		m_board.releaseKey(keyReleased);
 		break;
 	}

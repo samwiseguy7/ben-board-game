@@ -4,14 +4,14 @@ Board::Board(void)
 {
 }
 
-Screens Board::pressKey(ALLEGRO_EVENT& keyPressed)
+Screen Board::pressKey(ALLEGRO_EVENT& keyPressed)
 {
 	switch(keyPressed.keyboard.keycode)
 	{
 	case ALLEGRO_KEY_ENTER:
-		return Screens::MENU;
+		return Screen::MENU;
 	default:
-		return Screens::BOARD;
+		return Screen::BOARD;
 	}
 }
 

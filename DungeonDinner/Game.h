@@ -8,8 +8,7 @@
 class Game
 {
 private:
-	bool m_done;
-	Screens m_mode;
+	Screen m_mode;
 	Menu m_menu;
 	Board m_board;
 
@@ -18,8 +17,12 @@ public:
 	void update();
 	void pressKey(ALLEGRO_EVENT& keyPressed);
 	void releaseKey(ALLEGRO_EVENT& keyReleased);
-	bool done() { return m_done; }
-	Screens getMode() { return m_mode; }
+
+	const bool done() { if(m_mode==Screen::DONE) { return true; } else { return false; } }
+	const Screen getMode() { return m_mode; }
+	Menu& getMenu() { return m_menu; }
+	Board& getBoard() { return m_board; }
+
 	~Game(void);
 };
 
