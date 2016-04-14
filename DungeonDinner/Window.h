@@ -12,6 +12,8 @@ private:
 public:
 	Window(int, int);
 	void redraw(Game&);
+	void redrawMenu(Game&);
+	void redrawBoard(Game&);
 	~Window(void);
 };
 

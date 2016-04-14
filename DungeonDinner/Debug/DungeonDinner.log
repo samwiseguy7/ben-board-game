@@ -1,21 +1,25 @@
-﻿Build started 14/04/2016 10:08:18.
+﻿Build started 14/04/2016 10:53:12.
      1>Project "C:\VS2012Projects\DungeonDinner\DungeonDinner\DungeonDinner.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Ic:\allegro\include /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Game.cpp Window.cpp main.cpp
-         Window.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Ic:\allegro\include /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Board.cpp Game.cpp Menu.cpp Window.cpp main.cpp
+         Menu.cpp
+     1>c:\vs2012projects\dungeondinner\dungeondinner\menu.cpp(22): warning C4060: switch statement contains no 'case' or 'default' labels
          Game.cpp
-     1>c:\vs2012projects\dungeondinner\dungeondinner\game.cpp(24): warning C4060: switch statement contains no 'case' or 'default' labels
+         Board.cpp
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(22): warning C4060: switch statement contains no 'case' or 'default' labels
          Generating Code...
-         Compiling...
+         Skipping... (no relevant changes detected)
          main.cpp
-         Generating Code...
+         Window.cpp
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.exe" /INCREMENTAL /NOLOGO /LIBPATH:c:\allegro\lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib "allegro-5.0.10-monolith-md-debug.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.lib" /MACHINE:X86 Debug\Game.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.exe" /INCREMENTAL /NOLOGO /LIBPATH:c:\allegro\lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib "allegro-5.0.10-monolith-md-debug.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.lib" /MACHINE:X86 Debug\Board.obj
+         Debug\Game.obj
          Debug\main.obj
+         Debug\Menu.obj
          Debug\Window.obj
          DungeonDinner.vcxproj -> C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.exe
      1>Done Building Project "C:\VS2012Projects\DungeonDinner\DungeonDinner\DungeonDinner.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:05.51
+Time Elapsed 00:00:04.87
