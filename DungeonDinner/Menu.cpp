@@ -11,7 +11,7 @@ Menu::Menu(void)
 	m_option(MenuOp::NEW),
 	m_text(static_cast<int>(MenuOp::TOTAL)),
 	m_colourText(static_cast<int>(PlayerColour::TOTAL)),
-	m_font(al_load_font("C:/VS2012Projects/DungeonDinner/DungeonDinner/pirulen.ttf", static_cast<int>(TextSize::BIG), 0))
+	m_font(al_load_font("pirulen.ttf", static_cast<int>(TextSize::BIG), 0))
 {
 	changeStateSelect();
 	m_colourText.at(static_cast<int>(PlayerColour::RED)) = "Red";

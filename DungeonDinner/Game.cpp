@@ -16,7 +16,10 @@ void Game::pressKey(ALLEGRO_EVENT& keyPressed)
 	case ScreenMode::MENU:
 		newMode = m_menu.pressKey(keyPressed);
 		if(m_menu.setupDone())
-		{ newMode = ScreenMode::BOARD; }
+		{
+			m_board.makePlayers(m_menu.getPlayerDetails());
+			newMode = ScreenMode::BOARD;
+		}
 		break;
 	case ScreenMode::BOARD:
 		newMode = m_board.pressKey(keyPressed);

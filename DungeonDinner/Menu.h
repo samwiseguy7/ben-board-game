@@ -45,10 +45,11 @@ public:
 	void releaseKey(ALLEGRO_EVENT& keyReleased);
 
 	//access functions
-	PlayerDetails& getPlayerDetails() { return m_players; }
+	const PlayerDetails& getPlayerDetails() { return m_players; }
 	const bool setupDone() { if(m_setupDone) { m_setupDone = false; return true; } else return false; }
 	const MenuState getState() { return m_state; }
 	const MenuOp getOption() { return m_option; }
+	const PlayerColour getCurrentColour() { return m_currentColour; }
 	const std::vector<std::string>& getText() { return m_text; }
 	const ALLEGRO_FONT* getFont() { return m_font; }
 	

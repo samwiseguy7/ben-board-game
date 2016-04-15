@@ -5,12 +5,12 @@ Window::Window(int width, int height)
 	m_height(height),
 	m_colours(static_cast<int>(Colour::TOTAL))
 {
-	m_colours.at(static_cast<int>(Colour::RED)) = al_map_rgb(190, 0, 0);
-	m_colours.at(static_cast<int>(Colour::GREEN)) = al_map_rgb(0, 190, 0);
-	m_colours.at(static_cast<int>(Colour::BLUE)) = al_map_rgb(0, 0, 190);
-	m_colours.at(static_cast<int>(Colour::YELLOW)) = al_map_rgb(190, 190, 0);
-	m_colours.at(static_cast<int>(Colour::CYAN)) = al_map_rgb(0, 190, 190);
-	m_colours.at(static_cast<int>(Colour::MAGENTA)) = al_map_rgb(190, 0, 190);
+	m_colours.at(static_cast<int>(Colour::RED)) = al_map_rgb(255, 0, 0);
+	m_colours.at(static_cast<int>(Colour::GREEN)) = al_map_rgb(0, 255, 0);
+	m_colours.at(static_cast<int>(Colour::BLUE)) = al_map_rgb(0, 0, 255);
+	m_colours.at(static_cast<int>(Colour::YELLOW)) = al_map_rgb(255, 255, 0);
+	m_colours.at(static_cast<int>(Colour::CYAN)) = al_map_rgb(0, 255, 255);
+	m_colours.at(static_cast<int>(Colour::MAGENTA)) = al_map_rgb(255, 0, 255);
 	m_colours.at(static_cast<int>(Colour::BLACK)) = al_map_rgb(0, 0, 0);
 	m_colours.at(static_cast<int>(Colour::DIM)) = al_map_rgb(120, 120, 120);
 	m_colours.at(static_cast<int>(Colour::LIT)) = al_map_rgb(255, 255, 255);
@@ -41,11 +41,25 @@ void Window::drawMenuSelect(Menu& menu)
 			ALLEGRO_ALIGN_CENTRE, menu.getText().at(i).c_str());
 	}
 }
+
 void Window::drawMenuText(Menu& menu)
 {
 	for(int i=0; i<menu.getText().size(); ++i)
 	{
 		al_draw_text(menu.getFont(), m_colours.at(static_cast<int>(Colour::LIT)), m_width*0.5,
+			(m_height+((2*i)-static_cast<int>(MenuOp::TOTAL))*static_cast<int>(TextSize::BIG))*0.5,
+			ALLEGRO_ALIGN_CENTRE, menu.getText().at(i).c_str());
+	}
+}
+
+void Window::drawMenuColourText(Menu& menu)
+{
+	ALLEGRO_COLOR colour;
+	for(int i=0; i<menu.getText().size(); ++i)
+	{
+		if(i==0) { colour = m_colours.at(static_cast<int>(Colour::LIT)); }
+		else { colour = m_colours.at(static_cast<int>(menu.getCurrentColour())); }
+		al_draw_text(menu.getFont(), colour, m_width*0.5,
 			(m_height+((2*i)-static_cast<int>(MenuOp::TOTAL))*static_cast<int>(TextSize::BIG))*0.5,
 			ALLEGRO_ALIGN_CENTRE, menu.getText().at(i).c_str());
 	}
@@ -66,14 +80,43 @@ void Window::redrawMenu(Menu& menu)
 		drawMenuText(menu);
 		break;
 	case MenuState::COLOUR:
-		drawMenuText(menu);
+		drawMenuColourText(menu);
 		break;
 	}
 }
 
 void Window::redrawBoard(Board& board)
 {
-	al_clear_to_color(al_map_rgb(0, 150, 0));
+	al_clear_to_color(al_map_rgb(0, 0, 0));
+	for(int i=0; i<board.getNumberPlayers(); ++i)
+	{
+		int x; int y; int f;
+		switch(i)
+		{
+		case 0:
+			x = static_cast<int>(TextSize::MEDIUM);
+			y = static_cast<int>(TextSize::MEDIUM);
+			f = ALLEGRO_ALIGN_LEFT;
+			break;
+		case 1:
+			x = m_width-static_cast<int>(TextSize::MEDIUM);
+			y = static_cast<int>(TextSize::MEDIUM);
+			f = ALLEGRO_ALIGN_RIGHT;
+			break;
+		case 2:
+			x = static_cast<int>(TextSize::MEDIUM);
+			y = m_height-(static_cast<int>(TextSize::MEDIUM)*2);
+			f = ALLEGRO_ALIGN_LEFT;
+			break;
+		case 3:
+			x = m_width-static_cast<int>(TextSize::MEDIUM);
+			y = m_height-(static_cast<int>(TextSize::MEDIUM)*2);
+			f = ALLEGRO_ALIGN_RIGHT;
+			break;
+		}
+		al_draw_text(board.getFont(), m_colours.at(static_cast<int>(board.getPlayer(i).getColour())),
+			x, y, f, board.getPlayer(i).getName().c_str());
+	}
 }
 
 void Window::shutdown()

@@ -16,6 +16,7 @@ public:
 	void redraw(Game&);
 	void drawMenuSelect(Menu&);
 	void drawMenuText(Menu&);
+	void drawMenuColourText(Menu&);
 	void redrawMenu(Menu&);
 	void redrawBoard(Board&);
 	void shutdown();

@@ -25,7 +25,7 @@ enum class MenuState
 
 enum class TextSize
 {
-	SMALL = 10,
+	SMALL = 12,
 	MEDIUM = 20,
 	BIG = 32,
 };
