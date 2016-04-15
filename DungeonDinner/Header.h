@@ -3,6 +3,7 @@
 
 //standard
 #include <stdio.h>
+#include <stdlib.h>
 #include <string>
 #include <vector>
 
@@ -16,5 +17,6 @@
 
 //other
 #include "Enums.h"
+#include "Structs.h"
 
 #endif

@@ -4,15 +4,14 @@ Board::Board(void)
 {
 }
 
-Screen Board::pressKey(ALLEGRO_EVENT& keyPressed)
+ScreenMode Board::pressKey(ALLEGRO_EVENT& keyPressed)
 {
 	switch(keyPressed.keyboard.keycode)
 	{
-	case ALLEGRO_KEY_ENTER:
-		return Screen::MENU;
-	default:
-		return Screen::BOARD;
+	case ALLEGRO_KEY_ESCAPE:
+		return ScreenMode::MENU;
 	}
+	return ScreenMode::BOARD;
 }
 
 void Board::releaseKey(ALLEGRO_EVENT& keyReleased)
@@ -21,6 +20,9 @@ void Board::releaseKey(ALLEGRO_EVENT& keyReleased)
 	{
 	}
 }
+
+void Board::shutdown()
+{}
 
 Board::~Board(void)
 {

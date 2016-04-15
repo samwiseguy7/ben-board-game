@@ -1,7 +1,8 @@
 #include "Game.h"
 
 Game::Game(void)
-	:m_mode(Screen::MENU)
+	:m_done(false),
+	m_mode(ScreenMode::MENU)
 {
 }
 
@@ -9,30 +10,39 @@ void Game::update() {}
 
 void Game::pressKey(ALLEGRO_EVENT& keyPressed)
 {
-	Screen newMode = m_mode;
+	ScreenMode newMode;
 	switch(m_mode)
 	{
-	case Screen::MENU:
+	case ScreenMode::MENU:
 		newMode = m_menu.pressKey(keyPressed);
+		if(m_menu.setupDone())
+		{ newMode = ScreenMode::BOARD; }
 		break;
-	case Screen::BOARD:
+	case ScreenMode::BOARD:
 		newMode = m_board.pressKey(keyPressed);
 		break;
 	}
 	m_mode = newMode;
+	if(m_mode==ScreenMode::DONE) { m_done = true; }
 }
 
 void Game::releaseKey(ALLEGRO_EVENT& keyReleased)
 {
 	switch(m_mode)
 	{
-	case Screen::MENU:
+	case ScreenMode::MENU:
 		m_menu.releaseKey(keyReleased);
 		break;
-	case Screen::BOARD:
+	case ScreenMode::BOARD:
 		m_board.releaseKey(keyReleased);
 		break;
 	}
+}
+
+void Game::shutdown()
+{
+	m_menu.shutdown();
+	m_board.shutdown();
 }
 
 Game::~Game(void)

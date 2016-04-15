@@ -8,8 +8,9 @@ class Board
 public:
 	Board(void);
 	void update();
-	Screen pressKey(ALLEGRO_EVENT& keyPressed);
+	ScreenMode pressKey(ALLEGRO_EVENT& keyPressed);
 	void releaseKey(ALLEGRO_EVENT& keyReleased);
+	void shutdown();
 	~Board(void);
 };
 

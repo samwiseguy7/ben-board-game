@@ -104,6 +104,9 @@ int main(int argc, char **argv)
         }
     }
 
+	window.shutdown();
+	game.shutdown();
+
 	al_destroy_event_queue(event_queue);
 	al_destroy_display(display);
 	al_destroy_timer(timer);
