@@ -8,4 +8,21 @@ struct PlayerDetails
 	PlayerColour colour[4];
 };
 
+struct Hex
+{
+	int x,
+		y,
+		number;
+	Terrain terrain;
+};
+
+struct Monster
+{
+	int x,
+		y,
+		level;
+	bool moved,
+		placed;
+};
+
 #endif

@@ -23,11 +23,33 @@ enum class MenuState
 	COLOUR
 };
 
+enum class BoardState
+{
+	START,
+	PLACEHEX,
+	SPAWN,
+	MOVE,
+	EAT,
+	SCORE
+};
+
 enum class TextSize
 {
 	SMALL = 12,
 	MEDIUM = 20,
 	BIG = 32,
+};
+
+enum class Terrain
+{
+	DUNGEON,
+	VEGETATION,
+	OOZE,
+	MINE,
+	MUSHROOM,
+	FRUIT,
+	DIRT,
+	TOTAL
 };
 
 enum class PlayerColour
@@ -38,6 +60,7 @@ enum class PlayerColour
 	YELLOW,
 	CYAN,
 	MAGENTA,
+	BROWN,
 	TOTAL
 };
 
@@ -49,6 +72,7 @@ enum class Colour
 	YELLOW,
 	CYAN,
 	MAGENTA,
+	BROWN,
 	BLACK,
 	DIM,
 	LIT,

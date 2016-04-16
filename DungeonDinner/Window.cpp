@@ -11,6 +11,7 @@ Window::Window(int width, int height)
 	m_colours.at(static_cast<int>(Colour::YELLOW)) = al_map_rgb(255, 255, 0);
 	m_colours.at(static_cast<int>(Colour::CYAN)) = al_map_rgb(0, 255, 255);
 	m_colours.at(static_cast<int>(Colour::MAGENTA)) = al_map_rgb(255, 0, 255);
+	m_colours.at(static_cast<int>(Colour::BROWN)) = al_map_rgb(120, 50, 0);
 	m_colours.at(static_cast<int>(Colour::BLACK)) = al_map_rgb(0, 0, 0);
 	m_colours.at(static_cast<int>(Colour::DIM)) = al_map_rgb(120, 120, 120);
 	m_colours.at(static_cast<int>(Colour::LIT)) = al_map_rgb(255, 255, 255);
@@ -88,14 +89,26 @@ void Window::redrawMenu(Menu& menu)
 void Window::drawHexes(Board& board)
 {
 	int hex = 48;
-	int leftBorder = 64-hex;
-	int topBorder = 49-hex;
-	for(int y=0; y<(m_height/hex)+1; ++y)
+	int hexWidth = 64;
+	int hexHeight = 49;
+// draw a big mat of hexes
+//	for(int y=0; y<16; ++y)
+//	{
+//		for(int x=0; x<19; ++x)
+//		{
+//			if(!(y==15 && ((x+1)%2)))
+//			{ al_draw_bitmap(board.getHexBMP(0), (x+1)*hex, (y*hex)+(((x+1)%2)*(hex/2)), 0); }
+//		}
+//	}
+	for(int i=0; i<board.getHexes().size(); ++i)
 	{
-		for(int x=0; x<(m_width/hex); ++x)
-		{
-			al_draw_bitmap(board.getHexBMP(0), x*hex, (y*hex)-((x%2)*(hex/2)), 0);
-		}
+		int hexX = (m_width/2)+((board.getHexes().at(i).x)*hex)-(hexWidth/2);
+		int hexY = (m_height/2)+(board.getHexes().at(i).y*hex)+(((abs(board.getHexes().at(i).x))%2)*(hex/2))-(hexHeight/2);
+		al_draw_tinted_bitmap(board.getHexBMP(0),
+			m_colours.at(static_cast<int>(board.getHexes().at(i).terrain)), hexX, hexY, 0);
+		al_draw_text(board.getFont(), m_colours.at(static_cast<int>(Colour::BLACK)),
+			hexX+(hexWidth/2), hexY+((hexHeight-static_cast<int>(TextSize::MEDIUM))/2), ALLEGRO_ALIGN_CENTRE,
+			std::to_string(board.getHexes().at(i).number).c_str());
 	}
 }
 

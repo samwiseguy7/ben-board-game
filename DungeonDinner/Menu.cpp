@@ -20,6 +20,7 @@ Menu::Menu(void)
 	m_colourText.at(static_cast<int>(PlayerColour::YELLOW)) = "Yellow";
 	m_colourText.at(static_cast<int>(PlayerColour::CYAN)) = "Cyan";
 	m_colourText.at(static_cast<int>(PlayerColour::MAGENTA)) = "Magenta";
+	m_colourText.at(static_cast<int>(PlayerColour::BROWN)) = "Brown";
 }
 
 ScreenMode Menu::pressKey(ALLEGRO_EVENT& keyPressed)
@@ -229,7 +230,7 @@ void Menu::changeStateColour()
 
 void Menu::previousColour()
 {
-	if(m_currentColour==PlayerColour::RED) { m_currentColour = PlayerColour::MAGENTA; }
+	if(m_currentColour==PlayerColour::RED) { m_currentColour = PlayerColour::BROWN; }
 	else { m_currentColour = static_cast<PlayerColour>(static_cast<int>(m_currentColour) - 1); }
 	for(int i=0; i<m_currentPlayer; ++i)
 	{ if(m_currentColour==m_players.colour[i]) { previousColour(); } }
@@ -238,7 +239,7 @@ void Menu::previousColour()
 
 void Menu::nextColour()
 {
-	if(m_currentColour==PlayerColour::MAGENTA) { m_currentColour = PlayerColour::RED; }
+	if(m_currentColour==PlayerColour::BROWN) { m_currentColour = PlayerColour::RED; }
 	else { m_currentColour = static_cast<PlayerColour>(static_cast<int>(m_currentColour) + 1); }
 	for(int i=0; i<m_currentPlayer; ++i)
 	{ if(m_currentColour==m_players.colour[i]) { nextColour(); } }
