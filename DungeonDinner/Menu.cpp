@@ -183,14 +183,17 @@ void Menu::namePlayers(ALLEGRO_EVENT& keyPressed)
 	case ALLEGRO_KEY_X:
 	case ALLEGRO_KEY_Y:
 	case ALLEGRO_KEY_Z:
-		if(m_rcapsOn || m_lcapsOn) { m_text.at(1) += int(keyPressed.keyboard.keycode + 64); } //convert allegro keycode to ascii char
-		else { m_text.at(1) += int(keyPressed.keyboard.keycode + 96); }
+		if(m_text.at(1).length()<20)
+		{
+			if(m_rcapsOn || m_lcapsOn) { m_text.at(1) += int(keyPressed.keyboard.keycode + 64); } //convert allegro keycode to ascii char
+			else { m_text.at(1) += int(keyPressed.keyboard.keycode + 96); }
+		}
 		break;
 	case ALLEGRO_KEY_SPACE:
 		m_text.at(1) += " ";
 		break;
 	case ALLEGRO_KEY_BACKSPACE:
-		if(m_text.at(1).size()>0) { m_text.at(1).pop_back(); }
+		if(m_text.at(1).length()>0) { m_text.at(1).pop_back(); }
 		break;
 	case ALLEGRO_KEY_ENTER:
 		if(checkValidName())

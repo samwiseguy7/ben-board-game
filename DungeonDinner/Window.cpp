@@ -85,9 +85,22 @@ void Window::redrawMenu(Menu& menu)
 	}
 }
 
-void Window::redrawBoard(Board& board)
+void Window::drawHexes(Board& board)
 {
-	al_clear_to_color(al_map_rgb(0, 0, 0));
+	int hex = 48;
+	int leftBorder = 64-hex;
+	int topBorder = 49-hex;
+	for(int y=0; y<(m_height/hex)+1; ++y)
+	{
+		for(int x=0; x<(m_width/hex); ++x)
+		{
+			al_draw_bitmap(board.getHexBMP(0), x*hex, (y*hex)-((x%2)*(hex/2)), 0);
+		}
+	}
+}
+
+void Window::drawPlayers(Board& board)
+{
 	for(int i=0; i<board.getNumberPlayers(); ++i)
 	{
 		int x; int y; int f;
@@ -117,6 +130,13 @@ void Window::redrawBoard(Board& board)
 		al_draw_text(board.getFont(), m_colours.at(static_cast<int>(board.getPlayer(i).getColour())),
 			x, y, f, board.getPlayer(i).getName().c_str());
 	}
+}
+
+void Window::redrawBoard(Board& board)
+{
+	al_clear_to_color(al_map_rgb(0, 0, 0));
+	drawHexes(board);
+	drawPlayers(board);
 }
 
 void Window::shutdown()

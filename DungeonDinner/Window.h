@@ -14,10 +14,14 @@ private:
 public:
 	Window(int, int);
 	void redraw(Game&);
+
 	void drawMenuSelect(Menu&);
 	void drawMenuText(Menu&);
 	void drawMenuColourText(Menu&);
 	void redrawMenu(Menu&);
+	
+	void drawHexes(Board&);
+	void drawPlayers(Board&);
 	void redrawBoard(Board&);
 	void shutdown();
 	~Window(void);

@@ -2,7 +2,8 @@
 
 Board::Board(void)
 	:m_players(),
-	m_font(al_load_font("pirulen.ttf", static_cast<int>(TextSize::MEDIUM), 0))
+	m_font(al_load_font("pirulen.ttf", static_cast<int>(TextSize::MEDIUM), 0)),
+	m_hexes(1, (al_load_bitmap("FullHex.png")))
 {
 }
 

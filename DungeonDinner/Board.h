@@ -8,6 +8,7 @@ class Board
 {
 private:
 	ALLEGRO_FONT* m_font;
+	std::vector<ALLEGRO_BITMAP*> m_hexes;
 	std::vector<Player> m_players;
 
 public:
@@ -22,6 +23,7 @@ public:
 	const int getNumberPlayers() { return m_players.size(); }
 	Player& getPlayer(int index) { return m_players.at(index); }
 	const ALLEGRO_FONT* getFont() { return m_font; }
+	ALLEGRO_BITMAP* getHexBMP(int index) { return m_hexes.at(index); }
 
 	void shutdown();
 	~Board(void);
