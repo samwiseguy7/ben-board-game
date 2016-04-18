@@ -100,10 +100,27 @@ void Window::drawHexes(Board& board)
 //			{ al_draw_bitmap(board.getHexBMP(0), (x+1)*hex, (y*hex)+(((x+1)%2)*(hex/2)), 0); }
 //		}
 //	}
+
+	//get max and min values
+	int minX = 0;
+	int maxX = 0;
+	int minY = 0;
+	int maxY = 0;
 	for(int i=0; i<board.getHexes().size(); ++i)
 	{
-		int hexX = (m_width/2)+((board.getHexes().at(i).x)*hex)-(hexWidth/2);
-		int hexY = (m_height/2)+(board.getHexes().at(i).y*hex)+(((abs(board.getHexes().at(i).x))%2)*(hex/2))-(hexHeight/2);
+		if(board.getHexes().at(i).x<minX) { minX = board.getHexes().at(i).x; }
+		if(board.getHexes().at(i).x>maxX) { maxX = board.getHexes().at(i).x; }
+		if(board.getHexes().at(i).y<minY) { minY = board.getHexes().at(i).y; }
+		if(board.getHexes().at(i).y>maxY) { maxY = board.getHexes().at(i).y; }
+	}
+	int extraX = (maxX - abs(minX))*hex/2;
+	int extraY = (maxY - abs(minY))*hex/2;
+
+	//finally draw hexes
+	for(int i=0; i<board.getHexes().size(); ++i)
+	{
+		int hexX = (m_width/2)+((board.getHexes().at(i).x)*hex)-(hexWidth/2)-extraX;
+		int hexY = (m_height/2)+(board.getHexes().at(i).y*hex)+(((abs(board.getHexes().at(i).x))%2)*(hex/2))-(hexHeight/2)-extraY;
 		al_draw_tinted_bitmap(board.getHexBMP(0),
 			m_colours.at(static_cast<int>(board.getHexes().at(i).terrain)), hexX, hexY, 0);
 		al_draw_text(board.getFont(), m_colours.at(static_cast<int>(Colour::BLACK)),
