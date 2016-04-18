@@ -57,6 +57,9 @@ void Board::releaseKey(ALLEGRO_EVENT& keyReleased)
 
 void Board::makePlayers(const PlayerDetails& players)
 {
+	m_players.clear();
+	m_hexes.clear();
+	m_selectedX = m_selectedY = m_currentPlayer = m_flip = 0;
 	m_players.reserve(players.number);
 	for(int i=0; i<players.number; ++i)
 	{
@@ -64,13 +67,20 @@ void Board::makePlayers(const PlayerDetails& players)
 	}
 	m_firstPlayer = m_players.size()-1;
 	m_hexes.reserve(7*(m_players.size()+7));
+	m_state = BoardState::START;
 	createHexPlate();
 }
 
 void Board::createHexPlate()
 {
 	int x[7] = {m_selectedX, m_selectedX, m_selectedX+1, m_selectedX+1, m_selectedX, m_selectedX-1, m_selectedX-1};
-	int y[7] = {m_selectedY, m_selectedY-1, m_selectedY-1, m_selectedY, m_selectedY+1, m_selectedY, m_selectedY-1};
+	int y[7] = {m_selectedY, m_selectedY-1, m_selectedY-1, m_selectedY, m_selectedY+1, m_selectedY, m_selectedY-1};	
+	if(m_selectedX%2)
+	{
+		--y[0];
+		--y[1];
+		--y[4];
+	}
 	int numbers[7] = {0, 1, 2, 3, 4, 5, 6};
 	Terrain terrains[7];
 	terrains[0] = static_cast<Terrain>(rand()%7);
@@ -178,13 +188,14 @@ void Board::placeHexPlate(ALLEGRO_EVENT& keyPressed)
 
 void Board::nextPlayer()
 {
-	BoardState newState;
+	BoardState newState = m_state;
 	switch(m_state)
 	{
 	case BoardState::START:
 		++m_currentPlayer;
 		if(m_currentPlayer==(m_players.size()-1))
 		{ createHexPlate(); newState = BoardState::PLACEHEX; }
+		else { createHexPlate(); }
 		break;
 	case BoardState::PLACEHEX:
 		m_currentPlayer = ++m_firstPlayer;
