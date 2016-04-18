@@ -3,6 +3,7 @@
 Board::Board(void)
 	:m_lcapsOn(false),
 	m_rcapsOn(false),
+	m_flip(false),
 	m_currentPlayer(0),
 	m_firstPlayer(0),
 	m_spawnDie(rand()%6+1),
@@ -20,12 +21,12 @@ Board::Board(void)
 ScreenMode Board::pressKey(ALLEGRO_EVENT& keyPressed)
 {
 	if(keyPressed.keyboard.keycode==ALLEGRO_KEY_ESCAPE) { return ScreenMode::MENU; }
-//	switch(m_state)
-//	{
-//	case BoardState::START:
-//	case BoardState::PLACEHEX:
-//		placeHexPlate(keyPressed);
-//		break;
+	switch(m_state)
+	{
+	case BoardState::START:
+	case BoardState::PLACEHEX:
+		placeHexPlate(keyPressed);
+		break;
 //	case BoardState::SPAWN:
 //		placeMonster(keyPressed);
 //		break;
@@ -37,7 +38,7 @@ ScreenMode Board::pressKey(ALLEGRO_EVENT& keyPressed)
 //		break;
 //	case BoardState::SCORE:
 //		return ScreenMode::DONE;
-//	}
+	}
 	return ScreenMode::BOARD;
 }
 
@@ -68,9 +69,9 @@ void Board::makePlayers(const PlayerDetails& players)
 
 void Board::createHexPlate()
 {
-	int x[7] = {m_selectedX-1, m_selectedX, m_selectedX+1, m_selectedX-1, m_selectedX, m_selectedX+1, m_selectedX};
-	int y[7] = {m_selectedY-1, m_selectedY-1, m_selectedY-1, m_selectedY, m_selectedY, m_selectedY, m_selectedY+1};
-	int numbers[7] = {6, 1, 2, 5, 0, 3, 4};
+	int x[7] = {m_selectedX, m_selectedX, m_selectedX+1, m_selectedX+1, m_selectedX, m_selectedX-1, m_selectedX-1};
+	int y[7] = {m_selectedY, m_selectedY-1, m_selectedY-1, m_selectedY, m_selectedY+1, m_selectedY, m_selectedY-1};
+	int numbers[7] = {0, 1, 2, 3, 4, 5, 6};
 	Terrain terrains[7];
 	terrains[0] = static_cast<Terrain>(rand()%7);
 	for(int i=1; i<7; ++i)
@@ -94,13 +95,52 @@ void Board::createHexPlate()
 }
 
 void Board::moveHexPlateX(bool right)
-{}
+{
+	for(int i=m_hexes.size()-7; i<m_hexes.size(); ++i)
+	{
+		if(right) { ++m_hexes.at(i).x; }
+		else { --m_hexes.at(i).x; }
+		if(m_hexes.at(i).x%2) { --m_hexes.at(i).y; }
+		if(m_flip) { ++m_hexes.at(i).y; }
+	}
+	if(!m_flip) { m_flip = true; }
+	else { m_flip = false; }
+
+	m_selectedX = m_hexes.at(m_hexes.size()-7).x;
+	m_selectedY = m_hexes.at(m_hexes.size()-7).y;
+}
 
 void Board::moveHexPlateY(bool down)
-{}
+{
+	for(int i=m_hexes.size()-7; i<m_hexes.size(); ++i)
+	{
+		if(down) { ++m_hexes.at(i).y; }
+		else { --m_hexes.at(i).y; }
+	}
+
+	m_selectedX = m_hexes.at(m_hexes.size()-7).x;
+	m_selectedY = m_hexes.at(m_hexes.size()-7).y;
+}
 
 void Board::rotateHexPlate(bool clockwise)
-{}
+{
+	if(clockwise)
+	{
+		for(int i=m_hexes.size()-2; i>m_hexes.size()-7; --i)
+		{
+			std::swap(m_hexes.at(i).x, m_hexes.at(m_hexes.size()-1).x);
+			std::swap(m_hexes.at(i).y, m_hexes.at(m_hexes.size()-1).y);
+		}		
+	}
+	else
+	{
+		for(int i=m_hexes.size()-5; i<m_hexes.size(); ++i)
+		{
+			std::swap(m_hexes.at(i).x, m_hexes.at(m_hexes.size()-6).x);
+			std::swap(m_hexes.at(i).y, m_hexes.at(m_hexes.size()-6).y);
+		}
+	}
+}
 
 bool Board::checkValidHexPlace()
 { return true; }

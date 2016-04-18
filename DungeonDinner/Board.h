@@ -12,9 +12,10 @@ private:
 		m_spawnDie,
 		m_moveDie,
 		m_selectedX,
-		m_selectedY,
-		m_lcapsOn,
-		m_rcapsOn;
+		m_selectedY;
+	bool m_lcapsOn,
+		m_rcapsOn,
+		m_flip;
 	BoardState m_state;
 	ALLEGRO_FONT* m_font;
 	std::vector<ALLEGRO_BITMAP*> m_hexBMPs;
