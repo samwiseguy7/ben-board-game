@@ -69,6 +69,7 @@ void Board::makePlayers(const PlayerDetails& players)
 	m_hexes.reserve(7*(m_players.size()+7));
 	m_state = BoardState::START;
 	createHexPlate();
+	nextPlayer();
 }
 
 void Board::createHexPlate()
@@ -77,9 +78,10 @@ void Board::createHexPlate()
 	int y[7] = {m_selectedY, m_selectedY-1, m_selectedY-1, m_selectedY, m_selectedY+1, m_selectedY, m_selectedY-1};	
 	if(m_selectedX%2)
 	{
-		--y[0];
-		--y[1];
-		--y[4];
+		++y[2];
+		++y[3];
+		++y[5];
+		++y[6];
 	}
 	int numbers[7] = {0, 1, 2, 3, 4, 5, 6};
 	Terrain terrains[7];
@@ -153,7 +155,32 @@ void Board::rotateHexPlate(bool clockwise)
 }
 
 bool Board::checkValidHexPlace()
-{ return true; }
+{	
+	int adjacent = 0;
+	for(int i=0; i<m_hexes.size()-7; i+=7)
+	{
+		if(m_selectedX==m_hexes.at(i).x && m_selectedY==m_hexes.at(i).y) { return false; }
+		int oldX = m_hexes.at(i).x;
+		int oldY = m_hexes.at(i).y;
+		int sign = 1;
+		if(oldX%2) { sign = -1; }
+		if((m_selectedY==oldY 
+			&& (m_selectedX+3==oldX || m_selectedX-3==oldX))
+			|| (m_selectedY-(2*sign)==oldY
+			&& (m_selectedX+1==oldX || m_selectedX-1==oldX || m_selectedX-2==oldX || m_selectedX+2==oldX))
+			|| (m_selectedY+(1*sign)==oldY
+			&& (m_selectedX-3==oldX || m_selectedX+3==oldX))
+			|| (m_selectedY+(3*sign)==oldY
+			&& (m_selectedX-1==oldX || m_selectedX+1==oldX))
+			|| (m_selectedY+(2*sign)==oldY
+			&& (m_selectedX+2==oldX || m_selectedX-2==oldX)))
+		{
+			++adjacent;
+			if(adjacent>1 || m_hexes.size()==14) { return true; }
+		}
+	}
+	return false;
+}
 
 void Board::placeHexPlate(ALLEGRO_EVENT& keyPressed)
 {
