@@ -296,12 +296,11 @@ void Board::nextPlayer()
 		break;
 	case BoardState::SPAWN:
 		++m_currentPlayer;
-		m_spawnDie = rand()%6+1;
-		findSpawnPools();
 		if(m_currentPlayer==m_players.size())
 		{ m_currentPlayer = 0; }
 		if(m_currentPlayer==m_firstPlayer)
 		{ newState = BoardState::MOVE; }
+		else { m_spawnDie = rand()%6+1; findSpawnPools(); }
 		break;
 	case BoardState::EAT:
 		++m_currentPlayer;
