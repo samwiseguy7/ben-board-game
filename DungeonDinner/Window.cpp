@@ -101,7 +101,7 @@ void Window::drawHexes(Board& board)
 //		}
 //	}
 
-	//get max and min values
+	//get max and min values to offset hexes
 	int minX = 0;
 	int maxX = 0;
 	int minY = 0;
@@ -127,6 +127,10 @@ void Window::drawHexes(Board& board)
 			hexX+(hexWidth/2), hexY+((hexHeight-static_cast<int>(TextSize::MEDIUM))/2), ALLEGRO_ALIGN_CENTRE,
 			std::to_string(board.getHexes().at(i).number).c_str());
 	}
+	//draw selected hex
+	int targX = (m_width/2)+((board.getSelectedX())*hex)-(hexWidth/2)-extraX;
+	int targY = (m_height/2)+(board.getSelectedY()*hex)+(((abs(board.getSelectedX()))%2)*(hex/2))-(hexHeight/2)-extraY;
+	al_draw_bitmap(board.getHexBMP(1), targX, targY, 0);
 }
 
 void Window::drawPlayers(Board& board)
@@ -160,6 +164,12 @@ void Window::drawPlayers(Board& board)
 		al_draw_text(board.getFont(), m_colours.at(static_cast<int>(board.getPlayer(i).getColour())),
 			x, y, f, board.getPlayer(i).getName().c_str());
 	}
+	al_draw_text(board.getFont(), m_colours.at(static_cast<int>(Colour::LIT)),
+		m_width/2, static_cast<int>(TextSize::MEDIUM), ALLEGRO_ALIGN_CENTRE,
+		std::string("Spawn: "+std::to_string(board.getSpawnDie())).c_str());
+	al_draw_text(board.getFont(), m_colours.at(static_cast<int>(Colour::LIT)),
+		m_width/2, m_height-(2*static_cast<int>(TextSize::MEDIUM)), ALLEGRO_ALIGN_CENTRE,
+		std::string("Move: "+std::to_string(board.getMoveDie())).c_str());
 }
 
 void Window::redrawBoard(Board& board)

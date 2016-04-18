@@ -14,13 +14,14 @@ struct Hex
 		y,
 		number;
 	Terrain terrain;
+	bool occupied;
 };
 
 struct Monster
 {
 	int x,
-		y,
-		level;
+		y;
+	MLevel level;
 	bool moved,
 		placed;
 };

@@ -79,4 +79,15 @@ enum class Colour
 	TOTAL
 };
 
+enum class MLevel
+{
+	SLIME,
+	NIPPER,
+	SNAKE,
+	FLYER,
+	CAT,
+	GOAT,
+	TOTAL
+};
+
 #endif

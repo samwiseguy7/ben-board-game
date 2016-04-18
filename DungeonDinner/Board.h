@@ -12,12 +12,15 @@ private:
 		m_spawnDie,
 		m_moveDie,
 		m_selectedX,
-		m_selectedY;
+		m_selectedY,
+		m_selectedPool,
+		m_spawnCount;
 	bool m_lcapsOn,
 		m_rcapsOn,
 		m_flip;
 	BoardState m_state;
 	ALLEGRO_FONT* m_font;
+	std::vector<int> m_spawnPools;
 	std::vector<ALLEGRO_BITMAP*> m_hexBMPs;
 	std::vector<Player> m_players;
 	std::vector<Hex> m_hexes;
@@ -30,12 +33,16 @@ private:
 	bool checkValidHexPlace();
 	void placeHexPlate(ALLEGRO_EVENT& keyPressed);
 	
-	void nextPlayer();
-	void spawnMonsters();
-	void selectMonster(ALLEGRO_EVENT& keyPressed);
+	void findSpawnPools();
+	void previousSpawnPool();
+	void nextSpawnPool();
 	void placeMonster(ALLEGRO_EVENT& keyPressed);
+
+	void selectMonster(ALLEGRO_EVENT& keyPressed);
 	void moveMonster(ALLEGRO_EVENT& keyPressed);
 	void eatMonster(ALLEGRO_EVENT& keyPressed);
+	
+	void nextPlayer();
 
 public:
 	Board(void);
@@ -46,6 +53,10 @@ public:
 	void makePlayers(const PlayerDetails& players);
 
 	//access functions
+	const int getSpawnDie() { return m_spawnDie; }
+	const int getMoveDie() { return m_moveDie; }
+	const int getSelectedX() { return m_selectedX; }
+	const int getSelectedY() { return m_selectedY; }
 	const int getNumberPlayers() { return m_players.size(); }
 	Player& getPlayer(int index) { return m_players.at(index); }
 	const ALLEGRO_FONT* getFont() { return m_font; }

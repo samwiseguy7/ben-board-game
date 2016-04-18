@@ -6,16 +6,21 @@ Board::Board(void)
 	m_flip(false),
 	m_currentPlayer(0),
 	m_firstPlayer(0),
-	m_spawnDie(rand()%6+1),
-	m_moveDie(rand()%6+1),
+	m_spawnDie(0),
+	m_moveDie(0),
+	m_spawnCount(0),
 	m_selectedX(0),
 	m_selectedY(0),
+	m_selectedPool(0),
 	m_state(BoardState::START),
 	m_players(),
+	m_spawnPools(),
 	m_font(al_load_font("pirulen.ttf", static_cast<int>(TextSize::MEDIUM), 0)),
-	m_hexBMPs(1, (al_load_bitmap("FullHex.png"))),
+	m_hexBMPs(2, nullptr),
 	m_hexes()
 {
+	m_hexBMPs.at(0) = al_load_bitmap("FullHex.png");
+	m_hexBMPs.at(1) = al_load_bitmap("Target.png");
 }
 
 ScreenMode Board::pressKey(ALLEGRO_EVENT& keyPressed)
@@ -27,12 +32,12 @@ ScreenMode Board::pressKey(ALLEGRO_EVENT& keyPressed)
 	case BoardState::PLACEHEX:
 		placeHexPlate(keyPressed);
 		break;
-//	case BoardState::SPAWN:
-//		placeMonster(keyPressed);
-//		break;
-//	case BoardState::MOVE:
+	case BoardState::SPAWN:
+		placeMonster(keyPressed);
+		break;
+	case BoardState::MOVE:
 //		moveMonster(keyPressed);
-//		break;
+		break;
 //	case BoardState::EAT:
 //		eatMonster(keyPressed);
 //		break;
@@ -59,7 +64,7 @@ void Board::makePlayers(const PlayerDetails& players)
 {
 	m_players.clear();
 	m_hexes.clear();
-	m_selectedX = m_selectedY = m_currentPlayer = m_flip = 0;
+	m_selectedX = m_selectedY = m_selectedPool = m_currentPlayer = m_flip = m_spawnDie = m_moveDie = m_spawnCount = 0;
 	m_players.reserve(players.number);
 	for(int i=0; i<players.number; ++i)
 	{
@@ -101,7 +106,7 @@ void Board::createHexPlate()
 	}
 	for(int i=0; i<7; ++i)
 	{
-		Hex hex = {x[i], y[i], numbers[i], terrains[i]};
+		Hex hex = {x[i], y[i], numbers[i], terrains[i], false};
 		m_hexes.push_back(hex);
 	}
 }
@@ -213,6 +218,62 @@ void Board::placeHexPlate(ALLEGRO_EVENT& keyPressed)
 	}
 }
 
+void Board::findSpawnPools()
+{
+	m_spawnPools.clear();
+	m_spawnPools.reserve(m_hexes.size()/7);
+	for(int i=0; i<m_hexes.size(); ++i)
+	{
+		if(!(m_hexes.at(i).occupied) && m_hexes.at(i).number==m_spawnDie)
+		{ m_spawnPools.push_back(i); }
+	}
+	if(m_spawnPools.size()<1)
+	{ m_spawnDie = rand()%6+1; findSpawnPools(); }
+	m_selectedPool = 0;
+	m_selectedX = m_hexes.at(m_spawnPools.at(m_selectedPool)).x;
+	m_selectedY = m_hexes.at(m_spawnPools.at(m_selectedPool)).y;
+}
+
+void Board::nextSpawnPool()
+{
+	++m_selectedPool;
+	if(m_selectedPool==m_spawnPools.size())
+	{ m_selectedPool = 0; }
+	m_selectedX = m_hexes.at(m_spawnPools.at(m_selectedPool)).x;
+	m_selectedY = m_hexes.at(m_spawnPools.at(m_selectedPool)).y;
+}
+
+void Board::previousSpawnPool()
+{
+	--m_selectedPool;
+	if(m_selectedPool<0)
+	{ m_selectedPool = m_spawnPools.size()-1; }
+	m_selectedX = m_hexes.at(m_spawnPools.at(m_selectedPool)).x;
+	m_selectedY = m_hexes.at(m_spawnPools.at(m_selectedPool)).y;
+}
+
+void Board::placeMonster(ALLEGRO_EVENT& keyPressed)
+{
+	switch(keyPressed.keyboard.keycode)
+	{
+	case ALLEGRO_KEY_UP:
+	case ALLEGRO_KEY_LEFT:
+		previousSpawnPool();
+		break;
+	case ALLEGRO_KEY_DOWN:
+	case ALLEGRO_KEY_RIGHT:
+		nextSpawnPool();
+		break;
+	case ALLEGRO_KEY_ENTER:
+		++m_spawnCount;
+		m_hexes.at(m_spawnPools.at(m_selectedPool)).occupied = true;
+		m_players.at(m_currentPlayer).placeMonster(m_hexes.at(m_spawnPools.at(m_selectedPool)).x, m_hexes.at(m_spawnPools.at(m_selectedPool)).y);
+		if(m_players.at(m_currentPlayer).getDoneSpawn() || m_spawnCount==(m_hexes.size()/7)) { m_spawnCount = 0; nextPlayer(); }
+		else { findSpawnPools(); }
+		break;
+	}
+}
+
 void Board::nextPlayer()
 {
 	BoardState newState = m_state;
@@ -230,11 +291,13 @@ void Board::nextPlayer()
 		{ m_firstPlayer = m_currentPlayer = 0; }
 		m_moveDie = rand()%6+1;
 		m_spawnDie = rand()%6+1;
+		findSpawnPools();
 		newState = BoardState::SPAWN;
 		break;
 	case BoardState::SPAWN:
 		++m_currentPlayer;
 		m_spawnDie = rand()%6+1;
+		findSpawnPools();
 		if(m_currentPlayer==m_players.size())
 		{ m_currentPlayer = 0; }
 		if(m_currentPlayer==m_firstPlayer)
