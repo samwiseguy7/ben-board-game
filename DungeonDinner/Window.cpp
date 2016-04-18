@@ -127,10 +127,28 @@ void Window::drawHexes(Board& board)
 			hexX+(hexWidth/2), hexY+((hexHeight-static_cast<int>(TextSize::MEDIUM))/2), ALLEGRO_ALIGN_CENTRE,
 			std::to_string(board.getHexes().at(i).number).c_str());
 	}
+
 	//draw selected hex
 	int targX = (m_width/2)+((board.getSelectedX())*hex)-(hexWidth/2)-extraX;
 	int targY = (m_height/2)+(board.getSelectedY()*hex)+(((abs(board.getSelectedX()))%2)*(hex/2))-(hexHeight/2)-extraY;
 	al_draw_bitmap(board.getHexBMP(1), targX, targY, 0);
+
+	//drawMonsters
+	for(int i=0; i<board.getNumberPlayers(); ++i)
+	{
+		for(int m=0; m<board.getPlayer(i).getMonsters().size(); ++m)
+		{
+			if(board.getPlayer(i).getMonsters().at(m).placed)
+			{
+				al_draw_tinted_bitmap(board.getHexBMP(2), m_colours.at(static_cast<int>(board.getPlayer(i).getColour())),
+					(m_width/2)+((board.getPlayer(i).getMonsters().at(m).x)*hex)-(hexWidth/2)-extraX,
+					(m_height/2)+(board.getPlayer(i).getMonsters().at(m).y*hex)
+					+(((abs(board.getPlayer(i).getMonsters().at(m).x))%2)*(hex/2))-(hexHeight/2)-extraY, 0);
+			}
+		}
+	}
+
+	drawPlayers(board);
 }
 
 void Window::drawPlayers(Board& board)
@@ -176,7 +194,6 @@ void Window::redrawBoard(Board& board)
 {
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	drawHexes(board);
-	drawPlayers(board);
 }
 
 void Window::shutdown()

@@ -16,11 +16,12 @@ Board::Board(void)
 	m_players(),
 	m_spawnPools(),
 	m_font(al_load_font("pirulen.ttf", static_cast<int>(TextSize::MEDIUM), 0)),
-	m_hexBMPs(2, nullptr),
+	m_hexBMPs(3, nullptr),
 	m_hexes()
 {
 	m_hexBMPs.at(0) = al_load_bitmap("FullHex.png");
 	m_hexBMPs.at(1) = al_load_bitmap("Target.png");
+	m_hexBMPs.at(2) = al_load_bitmap("Slime.png");
 }
 
 ScreenMode Board::pressKey(ALLEGRO_EVENT& keyPressed)

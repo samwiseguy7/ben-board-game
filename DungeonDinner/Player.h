@@ -23,6 +23,7 @@ public:
 	const int getNumber() { return m_number; }
 	const PlayerColour getColour() { return m_colour; }
 	const std::string& getName() { return m_name; }
+	const std::vector<Monster>& getMonsters() { return m_monsters; }
 
 	~Player(void);
 };
