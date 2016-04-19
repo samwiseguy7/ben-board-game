@@ -14,6 +14,8 @@ Board::Board(void)
 	m_selectedX(0),
 	m_selectedY(0),
 	m_selectedHex(0),
+	m_selectedEnemy(0),
+	m_enemyPlayer(0),
 	m_state(BoardState::START),
 	m_players(),
 	m_spawnPools(),
@@ -51,7 +53,7 @@ ScreenMode Board::pressKey(ALLEGRO_EVENT& keyPressed)
 		moveMonster(keyPressed);
 		break;
 	case BoardState::EAT:
-//		eatMonster(keyPressed);
+		eatMonster(keyPressed);
 		break;
 //	case BoardState::SCORE:
 //		return ScreenMode::DONE;
@@ -76,7 +78,7 @@ void Board::makePlayers(const PlayerDetails& players)
 {
 	m_players.clear();
 	m_hexes.clear();
-	m_selectedX = m_selectedY = m_selectedHex = m_currentPlayer = m_flip = m_selected = m_spawnDie = m_moveDie = m_spawnCount = m_moveCount = 0;
+	m_selectedX = m_selectedY = m_selectedHex = m_selectedEnemy = m_currentPlayer = m_enemyPlayer = m_flip = m_selected = m_spawnDie = m_moveDie = m_spawnCount = m_moveCount = 0;
 	for(int i=0; i<players.number; ++i)
 	{
 		m_players.push_back(Player(i, players.colour[i], players.name[i]));
@@ -280,6 +282,22 @@ void Board::nextHex()
 			m_selectedY = m_hexes.at(m_adjacentEmpties.at(m_selectedHex)).y;
 		}
 		break;
+	case BoardState::EAT:
+		if(!m_selected)
+		{
+			if(m_selectedHex==m_adjacentEnemies.size())
+			{ m_selectedHex = 0; }
+			m_selectedX = m_hexes.at(m_adjacentEnemies.at(m_selectedHex)).x;
+			m_selectedY = m_hexes.at(m_adjacentEnemies.at(m_selectedHex)).y;
+		}
+		else
+		{
+			if(m_selectedHex==m_activeMonsters.size())
+			{ m_selectedHex = 0; }
+			m_selectedX = m_hexes.at(m_activeMonsters.at(m_selectedHex)).x;
+			m_selectedY = m_hexes.at(m_activeMonsters.at(m_selectedHex)).y;
+		}
+		break;
 	}
 }
 
@@ -308,6 +326,22 @@ void Board::previousHex()
 			{ m_selectedHex = m_adjacentEmpties.size()-1; }
 			m_selectedX = m_hexes.at(m_adjacentEmpties.at(m_selectedHex)).x;
 			m_selectedY = m_hexes.at(m_adjacentEmpties.at(m_selectedHex)).y;
+		}
+		break;
+	case BoardState::EAT:
+		if(!m_selected)
+		{
+			if(m_selectedHex<0)
+			{ m_selectedHex = m_adjacentEnemies.size()-1; }
+			m_selectedX = m_hexes.at(m_adjacentEnemies.at(m_selectedHex)).x;
+			m_selectedY = m_hexes.at(m_adjacentEnemies.at(m_selectedHex)).y;
+		}
+		else
+		{
+			if(m_selectedHex<0)
+			{ m_selectedHex = m_activeMonsters.size()-1; }
+			m_selectedX = m_hexes.at(m_activeMonsters.at(m_selectedHex)).x;
+			m_selectedY = m_hexes.at(m_activeMonsters.at(m_selectedHex)).y;
 		}
 		break;
 	}
@@ -474,6 +508,224 @@ void Board::moveMonster(ALLEGRO_EVENT& keyPressed)
 
 void Board::findAdjacentEnemies()
 {
+	m_adjacentEnemies.clear();
+	m_activeMonsters.clear();
+	for(int i=0; i<m_players.at(m_currentPlayer).getMonsters().size(); ++i) //locate each placed monster of current player
+	{
+		if(m_players.at(m_currentPlayer).getMonsters().at(i).placed)
+		{		
+			for(int h=0; h<m_hexes.size(); ++h)
+			{
+				if(m_hexes.at(h).occupied)
+				{
+					if(m_hexes.at(h).x==m_players.at(m_currentPlayer).getMonsters().at(i).x
+						&& m_hexes.at(h).y==m_players.at(m_currentPlayer).getMonsters().at(i).y)
+					{ m_activeMonsters.push_back(h); }
+				}
+			}
+		}
+	}
+	if(m_activeMonsters.size()<1)
+	{ nextPlayer(); }
+	else
+	{
+		int x[6];
+		int y[6];
+		bool notFriend = true;
+		for(int i=0; i<m_activeMonsters.size(); ++i) //locate adjacent hexes around each placed monster of currentPlayer
+		{
+			int friendlyX = m_hexes.at(m_activeMonsters.at(i)).x;
+			int friendlyY = m_hexes.at(m_activeMonsters.at(i)).y;
+			x[0] = friendlyX;
+			y[0] = friendlyY-1;
+			x[1] = friendlyX+1;
+			y[1] = friendlyY-1+(abs(friendlyX)%2);
+			x[2] = friendlyX+1;
+			y[2] = friendlyY+(abs(friendlyX)%2);
+			x[3] = friendlyX;
+			y[3] = friendlyY+1;
+			x[4] = friendlyX-1;
+			y[4] = friendlyY+(abs(friendlyX)%2);
+			x[5] = friendlyX-1;
+			y[5] = friendlyY-1+(abs(friendlyX)%2);
+			for(int h=0; h<m_hexes.size(); ++h) //check all hexes to locate the adjacent ones
+			{
+				if(m_hexes.at(h).occupied) //only occupied hexes have enemies
+				{
+					for(int f=0; f<m_activeMonsters.size(); ++f) //make sure not a friendly
+					{ if(m_activeMonsters.at(f)==h) { notFriend = false; break; } }
+					if(notFriend)
+					{
+						for(int a=0; a<6; ++a) //compare with each adjacent hex for this monster
+						{
+							if(m_hexes.at(h).x==x[a] && m_hexes.at(h).y==y[a]) //matches an adjacent hex
+							{ m_adjacentEnemies.push_back(h); }
+						}
+					}
+					notFriend = true;
+				}
+			}
+		}
+		if(m_adjacentEnemies.size()<1)
+		{ nextPlayer();	}
+		else
+		{
+			m_selectedHex = 0;
+			m_selectedX = m_hexes.at(m_adjacentEnemies.at(m_selectedHex)).x;
+			m_selectedY = m_hexes.at(m_adjacentEnemies.at(m_selectedHex)).y;
+		}
+	}
+}
+
+void Board::findAdjacentFriends()
+{
+	int x[6];
+	int y[6];
+	int enemyX = m_hexes.at(m_adjacentEnemies.at(m_selectedEnemy)).x;
+	int enemyY = m_hexes.at(m_adjacentEnemies.at(m_selectedEnemy)).y;
+	x[0] = enemyX;
+	y[0] = enemyY-1;
+	x[1] = enemyX+1;
+	y[1] = enemyY-1+(abs(enemyX)%2);
+	x[2] = enemyX+1;
+	y[2] = enemyY+(abs(enemyX)%2);
+	x[3] = enemyX;
+	y[3] = enemyY+1;
+	x[4] = enemyX-1;
+	y[4] = enemyY+(abs(enemyX)%2);
+	x[5] = enemyX-1;
+	y[5] = enemyY-1+(abs(enemyX)%2);
+	int adjacent[6];
+	bool notEnemy[6] = {false, false, false, false, false, false};
+	for(int h=0; h<m_hexes.size(); ++h) //check all hexes to locate the ones adjacent to the enemy
+	{
+		if(m_hexes.at(h).occupied) //only occupied hexes have friendlies
+		{
+			for(int a=0; a<6; ++a) //compare with each adjacent hex for this monster
+			{
+				if(m_hexes.at(h).x==x[a] && m_hexes.at(h).y==y[a]) //matches an adjacent hex
+				{
+					for(int f=0; f<m_activeMonsters.size(); ++f) //check if friendly!
+					{ if(m_activeMonsters.at(f)==h) { notEnemy[a] = true; adjacent[a] = h; } }
+				}
+			}
+		}
+	}
+	m_activeMonsters.clear();
+	for(int i=0; i<6; ++i)
+	{ if(notEnemy[i]) { m_activeMonsters.push_back(adjacent[i]); } }
+	m_selectedHex = 0;
+	m_selectedX = m_hexes.at(m_activeMonsters.at(m_selectedHex)).x;
+	m_selectedY = m_hexes.at(m_activeMonsters.at(m_selectedHex)).y;
+}
+
+bool Board::eatOrEaten()
+{
+	//count adjacent enemies
+	int enemyCount = 0;
+	int x[6];
+	int y[6];
+	int friendlyX = m_hexes.at(m_activeMonsters.at(m_selectedHex)).x;
+	int friendlyY = m_hexes.at(m_activeMonsters.at(m_selectedHex)).y;
+	x[0] = friendlyX;
+	y[0] = friendlyY-1;
+	x[1] = friendlyX+1;
+	y[1] = friendlyY-1+(abs(friendlyX)%2);
+	x[2] = friendlyX+1;
+	y[2] = friendlyY+(abs(friendlyX)%2);
+	x[3] = friendlyX;
+	y[3] = friendlyY+1;
+	x[4] = friendlyX-1;
+	y[4] = friendlyY+(abs(friendlyX)%2);
+	x[5] = friendlyX-1;
+	y[5] = friendlyY-1+(abs(friendlyX)%2);
+	for(int h=0; h<m_hexes.size(); ++h) //check all hexes to locate the adjacent ones
+	{
+		if(m_hexes.at(h).occupied) //only occupied hexes have enemies
+		{
+			for(int a=0; a<6; ++a) //compare with each adjacent hex for this monster
+			{
+				if(m_hexes.at(h).x==x[a] && m_hexes.at(h).y==y[a]) //matches an adjacent hex
+				{
+					for(int e=0; e<m_adjacentEnemies.size(); ++e) //check if enemy!
+					{ if(m_adjacentEnemies.at(e)==h) { ++enemyCount; if(enemyCount>1) { return false; } } }
+				}
+			}
+		}
+	}
+	//check level of adjacent enemy
+	int enemyX = m_hexes.at(m_adjacentEnemies.at(m_selectedEnemy)).x;
+	int enemyY = m_hexes.at(m_adjacentEnemies.at(m_selectedEnemy)).y;
+	for(int i=0; i<m_players.size(); ++i)
+	{
+		if(i==m_currentPlayer) { continue; } //enemy is not current player
+		for(int m=0; m<m_players.at(i).getMonsters().size(); ++m) //check each placed monster location
+		{
+			if(m_players.at(i).getMonsters().at(m).placed
+				&& m_players.at(i).getMonsters().at(m).x==enemyX && m_players.at(i).getMonsters().at(m).y==enemyY)
+			{
+				if(m_players.at(i).getMonsters().at(m).level<=m_players.at(m_currentPlayer).getLevel())
+				{ m_enemyPlayer = i; m_players.at(i).selectMonster(m); return true; }
+			}
+		}
+	}
+	//check if enemy is surrounded
+	if(m_activeMonsters.size()>1) { return true; }
+	return false;
+}
+
+void Board::resolveEating(bool eat)
+{
+	if(eat)
+	{
+		m_players.at(m_currentPlayer).levelUp();
+		if(m_activeMonsters.size()>1)
+		{
+			for(int i=0; i<m_activeMonsters.size(); ++i)
+			{
+				if(i!=m_selectedHex)
+				{ m_players.at(m_currentPlayer).levelUp(m_hexes.at(m_activeMonsters.at(i)).x, m_hexes.at(m_activeMonsters.at(i)).y); }
+			}
+			m_players.at(m_enemyPlayer).demote();
+		}
+		m_hexes.at(m_adjacentEnemies.at(m_selectedEnemy)).occupied = false;
+		m_players.at(m_enemyPlayer).removeMonster();
+	}
+	else
+	{
+		m_hexes.at(m_activeMonsters.at(m_selectedHex)).occupied = false;
+		m_players.at(m_currentPlayer).removeMonster();
+	}
+}
+
+void Board::eatMonster(ALLEGRO_EVENT& keyPressed)
+{
+	switch(keyPressed.keyboard.keycode)
+	{
+	case ALLEGRO_KEY_UP:
+	case ALLEGRO_KEY_LEFT:
+		previousHex();
+		break;
+	case ALLEGRO_KEY_DOWN:
+	case ALLEGRO_KEY_RIGHT:
+		nextHex();
+		break;
+	case ALLEGRO_KEY_ENTER:
+		if(!m_selected)
+		{
+			m_selected = true;
+			m_selectedEnemy = m_selectedHex;
+			findAdjacentFriends();
+		}
+		else
+		{
+			m_selected = false;
+			m_players.at(m_currentPlayer).selectMonster(m_selectedX, m_selectedY);
+			resolveEating(eatOrEaten());
+			findAdjacentEnemies();
+		}
+		break;
+	}
 }
 
 void Board::nextPlayer()

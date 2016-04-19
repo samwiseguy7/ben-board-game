@@ -1,21 +1,33 @@
-﻿Build started 19/04/2016 14:42:45.
+﻿Build started 19/04/2016 20:04:56.
      1>Project "C:\VS2012Projects\DungeonDinner\DungeonDinner\DungeonDinner.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Ic:\allegro\include /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Board.cpp
          Board.cpp
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(126): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(145): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(162): warning C4018: '>' : signed/unsigned mismatch
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(170): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(181): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(241): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(341): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(345): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(360): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(393): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(440): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(463): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(529): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(128): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(147): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(164): warning C4018: '>' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(172): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(183): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(243): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(375): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(379): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(394): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(427): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(474): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(497): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(513): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(517): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(535): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(551): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(555): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(600): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(608): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(642): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(650): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(659): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(662): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(684): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vs2012projects\dungeondinner\dungeondinner\board.cpp(781): warning C4018: '<' : signed/unsigned mismatch
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.exe" /INCREMENTAL /NOLOGO /LIBPATH:c:\allegro\lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib "allegro-5.0.10-monolith-md-debug.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\VS2012Projects\DungeonDinner\DungeonDinner\Debug\DungeonDinner.lib" /MACHINE:X86 Debug\Board.obj
          Debug\Game.obj
@@ -28,4 +40,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.07
+Time Elapsed 00:00:02.68

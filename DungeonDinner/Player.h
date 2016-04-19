@@ -14,14 +14,22 @@ private:
 	std::vector<Monster> m_monsters;
 	std::vector<int> m_resources;
 
+	void sortMonsters();
+
 public:
 	Player(void);
 	Player(const int, const PlayerColour, const std::string&);
 	void placeMonster(int, int);
+	void selectMonster(int index) { m_selectedMonster = index; }
 	void selectMonster(int, int);
 	void moveMonster(int, int);
+	void levelUp();
+	void levelUp(int, int);
+	void demote();
+	void removeMonster() { m_monsters.at(m_selectedMonster).placed = false; }
 
 	//access functions
+	const MLevel getLevel() { return m_monsters.at(m_selectedMonster).level; }
 	const bool getDoneSpawn() { return m_doneSpawn; }
 	const int getNumber() { return m_number; }
 	const PlayerColour getColour() { return m_colour; }

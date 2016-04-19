@@ -14,6 +14,8 @@ private:
 		m_selectedX,
 		m_selectedY,
 		m_selectedHex,
+		m_selectedEnemy,
+		m_enemyPlayer,
 		m_spawnCount,
 		m_moveCount;
 	bool m_lcapsOn,
@@ -49,7 +51,8 @@ private:
 
 	void findAdjacentEnemies();
 	void findAdjacentFriends();
-	bool checkEatOrEaten();
+	bool eatOrEaten();
+	void resolveEating(bool);
 	void eatMonster(ALLEGRO_EVENT& keyPressed);
 	
 	void nextPlayer();
