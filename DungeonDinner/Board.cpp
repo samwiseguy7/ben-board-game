@@ -4,17 +4,22 @@ Board::Board(void)
 	:m_lcapsOn(false),
 	m_rcapsOn(false),
 	m_flip(false),
+	m_selected(false),
 	m_currentPlayer(0),
 	m_firstPlayer(0),
 	m_spawnDie(0),
 	m_moveDie(0),
 	m_spawnCount(0),
+	m_moveCount(0),
 	m_selectedX(0),
 	m_selectedY(0),
-	m_selectedPool(0),
+	m_selectedHex(0),
 	m_state(BoardState::START),
 	m_players(),
 	m_spawnPools(),
+	m_activeMonsters(),
+	m_adjacentEmpties(),
+	m_adjacentEnemies(),
 	m_font(al_load_font("pirulen.ttf", static_cast<int>(TextSize::MEDIUM), 0)),
 	m_hexBMPs(3, nullptr),
 	m_hexes()
@@ -22,6 +27,12 @@ Board::Board(void)
 	m_hexBMPs.at(0) = al_load_bitmap("FullHex.png");
 	m_hexBMPs.at(1) = al_load_bitmap("Target.png");
 	m_hexBMPs.at(2) = al_load_bitmap("Slime.png");
+	m_players.reserve(4); //max players
+	m_spawnPools.reserve(4+7); //max spawnPools for four players and eight rounds
+	m_activeMonsters.reserve(4); //max monsters after first spawn
+	m_adjacentEmpties.reserve(6); //max empty adjacent hexes
+	m_adjacentEnemies.reserve(12); //max adjacent enemies after first move
+	m_hexes.reserve(7*(4+7)); //max hexes for four players and eight rounds with seven hexes per plate.
 }
 
 ScreenMode Board::pressKey(ALLEGRO_EVENT& keyPressed)
@@ -37,11 +48,11 @@ ScreenMode Board::pressKey(ALLEGRO_EVENT& keyPressed)
 		placeMonster(keyPressed);
 		break;
 	case BoardState::MOVE:
-//		moveMonster(keyPressed);
+		moveMonster(keyPressed);
 		break;
-//	case BoardState::EAT:
+	case BoardState::EAT:
 //		eatMonster(keyPressed);
-//		break;
+		break;
 //	case BoardState::SCORE:
 //		return ScreenMode::DONE;
 	}
@@ -65,14 +76,12 @@ void Board::makePlayers(const PlayerDetails& players)
 {
 	m_players.clear();
 	m_hexes.clear();
-	m_selectedX = m_selectedY = m_selectedPool = m_currentPlayer = m_flip = m_spawnDie = m_moveDie = m_spawnCount = 0;
-	m_players.reserve(players.number);
+	m_selectedX = m_selectedY = m_selectedHex = m_currentPlayer = m_flip = m_selected = m_spawnDie = m_moveDie = m_spawnCount = m_moveCount = 0;
 	for(int i=0; i<players.number; ++i)
 	{
 		m_players.push_back(Player(i, players.colour[i], players.name[i]));
 	}
 	m_firstPlayer = m_players.size()-1;
-	m_hexes.reserve(7*(m_players.size()+7));
 	m_state = BoardState::START;
 	createHexPlate();
 	nextPlayer();
@@ -126,6 +135,9 @@ void Board::moveHexPlateX(bool right)
 
 	m_selectedX = m_hexes.at(m_hexes.size()-7).x;
 	m_selectedY = m_hexes.at(m_hexes.size()-7).y;
+
+	if(abs(m_selectedX)>18 || abs(m_selectedY)>15)
+	{ if(right) { moveHexPlateX(false); } else { moveHexPlateX(true); } }
 }
 
 void Board::moveHexPlateY(bool down)
@@ -138,6 +150,9 @@ void Board::moveHexPlateY(bool down)
 
 	m_selectedX = m_hexes.at(m_hexes.size()-7).x;
 	m_selectedY = m_hexes.at(m_hexes.size()-7).y;
+
+	if(abs(m_selectedX)>18 || abs(m_selectedY)>15)
+	{ if(down) { moveHexPlateY(false); } else { moveHexPlateY(true); } }
 }
 
 void Board::rotateHexPlate(bool clockwise)
@@ -230,27 +245,72 @@ void Board::findSpawnPools()
 	}
 	if(m_spawnPools.size()<1)
 	{ m_spawnDie = rand()%6+1; findSpawnPools(); }
-	m_selectedPool = 0;
-	m_selectedX = m_hexes.at(m_spawnPools.at(m_selectedPool)).x;
-	m_selectedY = m_hexes.at(m_spawnPools.at(m_selectedPool)).y;
+	else
+	{
+		m_selectedHex = 0;
+		m_selectedX = m_hexes.at(m_spawnPools.at(m_selectedHex)).x;
+		m_selectedY = m_hexes.at(m_spawnPools.at(m_selectedHex)).y;
+	}
 }
 
-void Board::nextSpawnPool()
+void Board::nextHex()
 {
-	++m_selectedPool;
-	if(m_selectedPool==m_spawnPools.size())
-	{ m_selectedPool = 0; }
-	m_selectedX = m_hexes.at(m_spawnPools.at(m_selectedPool)).x;
-	m_selectedY = m_hexes.at(m_spawnPools.at(m_selectedPool)).y;
+	++m_selectedHex;
+	switch(m_state)
+	{
+	case BoardState::SPAWN:
+		if(m_selectedHex==m_spawnPools.size())
+		{ m_selectedHex = 0; }
+		m_selectedX = m_hexes.at(m_spawnPools.at(m_selectedHex)).x;
+		m_selectedY = m_hexes.at(m_spawnPools.at(m_selectedHex)).y;
+		break;
+	case BoardState::MOVE:
+		if(!m_selected)
+		{
+			if(m_selectedHex==m_activeMonsters.size())
+			{ m_selectedHex = 0; }
+			m_selectedX = m_hexes.at(m_activeMonsters.at(m_selectedHex)).x;
+			m_selectedY = m_hexes.at(m_activeMonsters.at(m_selectedHex)).y;
+		}
+		else
+		{
+			if(m_selectedHex==m_adjacentEmpties.size())
+			{ m_selectedHex = 0; }
+			m_selectedX = m_hexes.at(m_adjacentEmpties.at(m_selectedHex)).x;
+			m_selectedY = m_hexes.at(m_adjacentEmpties.at(m_selectedHex)).y;
+		}
+		break;
+	}
 }
 
-void Board::previousSpawnPool()
+void Board::previousHex()
 {
-	--m_selectedPool;
-	if(m_selectedPool<0)
-	{ m_selectedPool = m_spawnPools.size()-1; }
-	m_selectedX = m_hexes.at(m_spawnPools.at(m_selectedPool)).x;
-	m_selectedY = m_hexes.at(m_spawnPools.at(m_selectedPool)).y;
+	--m_selectedHex;
+	switch(m_state)
+	{
+	case BoardState::SPAWN:
+		if(m_selectedHex<0)
+		{ m_selectedHex = m_spawnPools.size()-1; }
+		m_selectedX = m_hexes.at(m_spawnPools.at(m_selectedHex)).x;
+		m_selectedY = m_hexes.at(m_spawnPools.at(m_selectedHex)).y;
+		break;
+	case BoardState::MOVE:
+		if(!m_selected)
+		{
+			if(m_selectedHex<0)
+			{ m_selectedHex = m_activeMonsters.size()-1; }
+			m_selectedX = m_hexes.at(m_activeMonsters.at(m_selectedHex)).x;
+			m_selectedY = m_hexes.at(m_activeMonsters.at(m_selectedHex)).y;
+		}
+		else
+		{
+			if(m_selectedHex<0)
+			{ m_selectedHex = m_adjacentEmpties.size()-1; }
+			m_selectedX = m_hexes.at(m_adjacentEmpties.at(m_selectedHex)).x;
+			m_selectedY = m_hexes.at(m_adjacentEmpties.at(m_selectedHex)).y;
+		}
+		break;
+	}
 }
 
 void Board::placeMonster(ALLEGRO_EVENT& keyPressed)
@@ -259,20 +319,161 @@ void Board::placeMonster(ALLEGRO_EVENT& keyPressed)
 	{
 	case ALLEGRO_KEY_UP:
 	case ALLEGRO_KEY_LEFT:
-		previousSpawnPool();
+		previousHex();
 		break;
 	case ALLEGRO_KEY_DOWN:
 	case ALLEGRO_KEY_RIGHT:
-		nextSpawnPool();
+		nextHex();
 		break;
 	case ALLEGRO_KEY_ENTER:
 		++m_spawnCount;
-		m_hexes.at(m_spawnPools.at(m_selectedPool)).occupied = true;
-		m_players.at(m_currentPlayer).placeMonster(m_hexes.at(m_spawnPools.at(m_selectedPool)).x, m_hexes.at(m_spawnPools.at(m_selectedPool)).y);
+		m_hexes.at(m_spawnPools.at(m_selectedHex)).occupied = true;
+		m_players.at(m_currentPlayer).placeMonster(m_selectedX, m_selectedY);
 		if(m_players.at(m_currentPlayer).getDoneSpawn() || m_spawnCount==(m_hexes.size()/7)) { m_spawnCount = 0; nextPlayer(); }
 		else { findSpawnPools(); }
 		break;
 	}
+}
+
+void Board::findMonsters()
+{
+	m_activeMonsters.clear();
+	for(int i=0; i<m_players.at(m_currentPlayer).getMonsters().size(); ++i)
+	{
+		if(m_players.at(m_currentPlayer).getMonsters().at(i).placed && !m_players.at(m_currentPlayer).getMonsters().at(i).moved)
+		{		
+			for(int h=0; h<m_hexes.size(); ++h)
+			{
+				if(m_hexes.at(h).occupied)
+				{
+					if(m_hexes.at(h).x==m_players.at(m_currentPlayer).getMonsters().at(i).x
+						&& m_hexes.at(h).y==m_players.at(m_currentPlayer).getMonsters().at(i).y)
+					{ m_activeMonsters.push_back(h); }
+				}
+			}
+		}
+	}
+	if(m_activeMonsters.size()<1)
+	{
+		m_moveCount = 0;
+		int enemies = 0;
+		for(int i=0; i<m_players.size(); ++i)
+		{ enemies += m_players.at(i).getMonsters().size(); }
+		m_adjacentEnemies.reserve(enemies);
+		m_state = BoardState::EAT;
+		findAdjacentEnemies();
+	}
+	else
+	{
+		m_selectedHex = 0;
+		m_selectedX = m_hexes.at(m_activeMonsters.at(m_selectedHex)).x;
+		m_selectedY = m_hexes.at(m_activeMonsters.at(m_selectedHex)).y;
+	}
+}
+
+void Board::findAdjacentEmpties()
+{
+	m_adjacentEmpties.clear();
+	int x[6];
+	int y[6];
+	x[0] = m_selectedX;
+	y[0] = m_selectedY-1;
+	x[1] = m_selectedX+1;
+	y[1] = m_selectedY-1+(abs(m_selectedX)%2);
+	x[2] = m_selectedX+1;
+	y[2] = m_selectedY+(abs(m_selectedX)%2);
+	x[3] = m_selectedX;
+	y[3] = m_selectedY+1;
+	x[4] = m_selectedX-1;
+	y[4] = m_selectedY+(abs(m_selectedX)%2);
+	x[5] = m_selectedX-1;
+	y[5] = m_selectedY-1+(abs(m_selectedX)%2);
+	int adjacent[6];
+	bool hexFound[6] = {false, false, false, false, false, false};
+	for(int i=0; i<m_hexes.size(); ++i)
+	{
+		if(!m_hexes.at(i).occupied)
+		{
+			if(!hexFound[0] && m_hexes.at(i).x==x[0] && m_hexes.at(i).y==y[0]) { adjacent[0] = i; hexFound[0] = true; }
+			if(!hexFound[1] && m_hexes.at(i).x==x[1] && m_hexes.at(i).y==y[1]) { adjacent[1] = i; hexFound[1] = true; }
+			if(!hexFound[2] && m_hexes.at(i).x==x[2] && m_hexes.at(i).y==y[2]) { adjacent[2] = i; hexFound[2] = true; }
+			if(!hexFound[3] && m_hexes.at(i).x==x[3] && m_hexes.at(i).y==y[3]) { adjacent[3] = i; hexFound[3] = true; }
+			if(!hexFound[4] && m_hexes.at(i).x==x[4] && m_hexes.at(i).y==y[4]) { adjacent[4] = i; hexFound[4] = true; }
+			if(!hexFound[5] && m_hexes.at(i).x==x[5] && m_hexes.at(i).y==y[5]) { adjacent[5] = i; hexFound[5] = true; }
+			if(hexFound[0] && hexFound[1] && hexFound[2] && hexFound[3] && hexFound[4] && hexFound[5])
+			{ break; }
+		}
+	}
+	for(int i=0; i<6; ++i)
+	{
+		if(hexFound[i]) { m_adjacentEmpties.push_back(adjacent[i]); }
+	}
+	if(m_adjacentEmpties.size()<1)
+	{
+		m_selected = false;
+		m_hexes.at(m_activeMonsters.at(m_selectedHex)).occupied = true;
+		findMonsters();
+	}
+	else
+	{
+		m_selectedHex = 0;
+		m_selectedX = m_hexes.at(m_adjacentEmpties.at(m_selectedHex)).x;
+		m_selectedY = m_hexes.at(m_adjacentEmpties.at(m_selectedHex)).y;
+	}
+}
+
+void Board::moveMonster(ALLEGRO_EVENT& keyPressed)
+{	
+	int enemies = 0;
+	switch(keyPressed.keyboard.keycode)
+	{
+	case ALLEGRO_KEY_UP:
+	case ALLEGRO_KEY_LEFT:
+		previousHex();
+		break;
+	case ALLEGRO_KEY_DOWN:
+	case ALLEGRO_KEY_RIGHT:
+		nextHex();
+		break;
+	case ALLEGRO_KEY_SPACE:
+		m_moveCount = 0;
+		for(int i=0; i<m_players.size(); ++i)
+		{ enemies += m_players.at(i).getMonsters().size(); }
+		m_adjacentEnemies.reserve(enemies);
+		m_state = BoardState::EAT;
+		findAdjacentEnemies();
+		break;
+	case ALLEGRO_KEY_ENTER:
+		if(!m_selected)
+		{
+			m_selected = true;
+			m_hexes.at(m_activeMonsters.at(m_selectedHex)).occupied = false;
+			m_players.at(m_currentPlayer).selectMonster(m_selectedX, m_selectedY);
+			findAdjacentEmpties();
+		}
+		else
+		{
+			m_hexes.at(m_adjacentEmpties.at(m_selectedHex)).occupied = true;
+			m_players.at(m_currentPlayer).moveMonster(m_selectedX, m_selectedY);
+			m_selected = false;
+			++m_moveCount;
+			if(m_moveCount==m_moveDie)
+			{
+				m_moveCount = 0;
+				for(int i=0; i<m_players.size(); ++i)
+				{ enemies += m_players.at(i).getMonsters().size(); }
+				m_adjacentEnemies.reserve(enemies);
+				m_state = BoardState::EAT;
+				findAdjacentEnemies();
+			}
+			else { findMonsters(); }
+		}
+		break;
+	}
+}
+
+void Board::findAdjacentEnemies()
+{
 }
 
 void Board::nextPlayer()
@@ -300,7 +501,11 @@ void Board::nextPlayer()
 		if(m_currentPlayer==m_players.size())
 		{ m_currentPlayer = 0; }
 		if(m_currentPlayer==m_firstPlayer)
-		{ newState = BoardState::MOVE; }
+		{
+			m_activeMonsters.reserve(m_players.at(m_currentPlayer).getMonsters().size());
+			findMonsters();
+			newState = BoardState::MOVE;
+		}
 		else { m_spawnDie = rand()%6+1; findSpawnPools(); }
 		break;
 	case BoardState::EAT:
@@ -311,6 +516,8 @@ void Board::nextPlayer()
 		{ createHexPlate(); newState = BoardState::PLACEHEX; }
 		else if(m_currentPlayer==m_firstPlayer)
 		{ newState = BoardState::SCORE; }
+		else
+		{ m_moveCount = 0; newState = BoardState::MOVE; findMonsters(); }
 		break;
 	}
 	m_state = newState;

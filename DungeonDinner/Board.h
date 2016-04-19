@@ -13,14 +13,19 @@ private:
 		m_moveDie,
 		m_selectedX,
 		m_selectedY,
-		m_selectedPool,
-		m_spawnCount;
+		m_selectedHex,
+		m_spawnCount,
+		m_moveCount;
 	bool m_lcapsOn,
 		m_rcapsOn,
-		m_flip;
+		m_flip,
+		m_selected;
 	BoardState m_state;
 	ALLEGRO_FONT* m_font;
 	std::vector<int> m_spawnPools;
+	std::vector<int> m_activeMonsters;
+	std::vector<int> m_adjacentEmpties;
+	std::vector<int> m_adjacentEnemies;
 	std::vector<ALLEGRO_BITMAP*> m_hexBMPs;
 	std::vector<Player> m_players;
 	std::vector<Hex> m_hexes;
@@ -34,12 +39,17 @@ private:
 	void placeHexPlate(ALLEGRO_EVENT& keyPressed);
 	
 	void findSpawnPools();
-	void previousSpawnPool();
-	void nextSpawnPool();
+	void previousHex();
+	void nextHex();
 	void placeMonster(ALLEGRO_EVENT& keyPressed);
 
-	void selectMonster(ALLEGRO_EVENT& keyPressed);
+	void findMonsters();
+	void findAdjacentEmpties();
 	void moveMonster(ALLEGRO_EVENT& keyPressed);
+
+	void findAdjacentEnemies();
+	void findAdjacentFriends();
+	bool checkEatOrEaten();
 	void eatMonster(ALLEGRO_EVENT& keyPressed);
 	
 	void nextPlayer();
@@ -53,8 +63,10 @@ public:
 	void makePlayers(const PlayerDetails& players);
 
 	//access functions
+	const BoardState getState() { return m_state; }
 	const int getSpawnDie() { return m_spawnDie; }
 	const int getMoveDie() { return m_moveDie; }
+	const int getMoveCount() { return m_moveCount; }
 	const int getSelectedX() { return m_selectedX; }
 	const int getSelectedY() { return m_selectedY; }
 	const int getNumberPlayers() { return m_players.size(); }

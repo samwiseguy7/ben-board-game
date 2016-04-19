@@ -7,7 +7,8 @@ class Player
 {
 private:
 	bool m_doneSpawn;
-	int m_number;
+	int m_number,
+		m_selectedMonster;
 	PlayerColour m_colour;
 	std::string m_name;
 	std::vector<Monster> m_monsters;
@@ -17,6 +18,8 @@ public:
 	Player(void);
 	Player(const int, const PlayerColour, const std::string&);
 	void placeMonster(int, int);
+	void selectMonster(int, int);
+	void moveMonster(int, int);
 
 	//access functions
 	const bool getDoneSpawn() { return m_doneSpawn; }

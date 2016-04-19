@@ -37,6 +37,22 @@ void Player::placeMonster(int x, int y)
 	}
 }
 
+void Player::selectMonster(int x, int y)
+{
+	for(int i=0; i<m_monsters.size(); ++i)
+	{
+		if(m_monsters.at(i).x==x && m_monsters.at(i).y==y)
+		{ m_selectedMonster = i; break; }
+	}
+}
+
+void Player::moveMonster(int x, int y)
+{
+	m_monsters.at(m_selectedMonster).x = x;
+	m_monsters.at(m_selectedMonster).y = y;
+	m_monsters.at(m_selectedMonster).moved = true;
+}
+
 Player::~Player(void)
 {
 }

@@ -147,8 +147,6 @@ void Window::drawHexes(Board& board)
 			}
 		}
 	}
-
-	drawPlayers(board);
 }
 
 void Window::drawPlayers(Board& board)
@@ -182,18 +180,32 @@ void Window::drawPlayers(Board& board)
 		al_draw_text(board.getFont(), m_colours.at(static_cast<int>(board.getPlayer(i).getColour())),
 			x, y, f, board.getPlayer(i).getName().c_str());
 	}
-	al_draw_text(board.getFont(), m_colours.at(static_cast<int>(Colour::LIT)),
-		m_width/2, static_cast<int>(TextSize::MEDIUM), ALLEGRO_ALIGN_CENTRE,
-		std::string("Spawn: "+std::to_string(board.getSpawnDie())).c_str());
-	al_draw_text(board.getFont(), m_colours.at(static_cast<int>(Colour::LIT)),
-		m_width/2, m_height-(2*static_cast<int>(TextSize::MEDIUM)), ALLEGRO_ALIGN_CENTRE,
-		std::string("Move: "+std::to_string(board.getMoveDie())).c_str());
+	switch(board.getState())
+	{
+	case BoardState::SPAWN:
+		al_draw_text(board.getFont(), m_colours.at(static_cast<int>(Colour::LIT)),
+			m_width/2, static_cast<int>(TextSize::MEDIUM), ALLEGRO_ALIGN_CENTRE,
+			std::string("Spawn: "+std::to_string(board.getSpawnDie())).c_str());
+		al_draw_text(board.getFont(), m_colours.at(static_cast<int>(Colour::LIT)),
+			m_width/2, m_height-(2*static_cast<int>(TextSize::MEDIUM)), ALLEGRO_ALIGN_CENTRE,
+			std::string("Move: "+std::to_string(board.getMoveDie())).c_str());
+		break;
+	case BoardState::MOVE:
+		al_draw_text(board.getFont(), m_colours.at(static_cast<int>(Colour::LIT)),
+			m_width/2, static_cast<int>(TextSize::MEDIUM), ALLEGRO_ALIGN_CENTRE,
+			std::string("Move: "+std::to_string(board.getMoveDie())).c_str());
+		al_draw_text(board.getFont(), m_colours.at(static_cast<int>(Colour::LIT)),
+			m_width/2, m_height-(2*static_cast<int>(TextSize::MEDIUM)), ALLEGRO_ALIGN_CENTRE,
+			std::string("Moved: "+std::to_string(board.getMoveCount())).c_str());
+		break;
+	}
 }
 
 void Window::redrawBoard(Board& board)
 {
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	drawHexes(board);
+	drawPlayers(board);
 }
 
 void Window::shutdown()
